@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+@import 'bulma/css/bulma.css';
+
+:root {
+  --family-primary: '"Nunito", sans-serif';
+  --control-border-width: 2px;
+  --input-shadow: none;
+  --bulma-primary-h: 74deg;
+}
+
+body {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Rick_and_Morty.svg/256px-Rick_and_Morty.svg.png')
+    1rem 1rem no-repeat fixed;
+}
+
+.card-result {
+  height: 100%;
+}
