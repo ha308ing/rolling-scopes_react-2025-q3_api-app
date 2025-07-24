@@ -1,7 +1,9 @@
 import React, { type ChangeEventHandler, type FormEventHandler } from 'react';
 import { ErrorButton } from './error-button';
+import { Link } from 'react-router';
+import { ROUTES } from '../constants';
 
-interface ISearchControlsProps {
+export interface ISearchControlsProps {
   value: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
   onSearch: () => void;
@@ -41,6 +43,11 @@ export const SearchControls: React.FC<ISearchControlsProps> = ({
           Search
         </button>
       </div>
+
+      <Link to={ROUTES.ABOUT}>
+        <button className="button">About</button>
+      </Link>
+
       <div className="control">
         <ErrorButton />
       </div>

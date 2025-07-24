@@ -1,6 +1,13 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { test, expect, describe, vitest } from 'vitest';
-import { SearchControls } from './search-controls';
+import { SearchControls, type ISearchControlsProps } from './search-controls';
+import { MemoryRouter } from 'react-router';
+
+const SearchControlsWithRouter = (props: ISearchControlsProps) => (
+  <MemoryRouter>
+    <SearchControls {...props} />
+  </MemoryRouter>
+);
 
 describe('test search controls component', () => {
   test('should display passed value', async () => {
@@ -9,7 +16,7 @@ describe('test search controls component', () => {
     const onSearch = vitest.fn();
 
     const { getByRole } = render(
-      <SearchControls
+      <SearchControlsWithRouter
         onChange={onChange}
         value={inputValue}
         onSearch={onSearch}
@@ -26,7 +33,7 @@ describe('test search controls component', () => {
     const isLoading = true;
 
     const { getByText } = render(
-      <SearchControls
+      <SearchControlsWithRouter
         onChange={onChange}
         value={inputValue}
         onSearch={onSearch}

@@ -2,6 +2,13 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
 import { MainPage } from './main-page';
 import { getRickMortyCharacterByName } from '../services/rick-morty';
+import { MemoryRouter } from 'react-router';
+
+const MainPageWithRouter = () => (
+  <MemoryRouter>
+    <MainPage />
+  </MemoryRouter>
+);
 
 describe('test main page', () => {
   beforeEach(() => {
@@ -47,7 +54,7 @@ describe('test main page', () => {
   });
 
   test('should fill input with localstorage value', async () => {
-    const { findByRole } = render(<MainPage />);
+    const { findByRole } = render(<MainPageWithRouter />);
 
     const searchInput = await findByRole('textbox');
 
@@ -62,7 +69,7 @@ describe('test main page', () => {
       setItem: localStorageSetSpy,
     });
 
-    const { findByText } = render(<MainPage />);
+    const { findByText } = render(<MainPageWithRouter />);
     const searchButton = await findByText(/search/i);
 
     act(() => {
@@ -85,7 +92,7 @@ describe('test main page', () => {
       } as unknown as AbortController,
     ]);
 
-    const { findByText } = render(<MainPage />);
+    const { findByText } = render(<MainPageWithRouter />);
 
     const message = await findByText(/failed to get/i);
 

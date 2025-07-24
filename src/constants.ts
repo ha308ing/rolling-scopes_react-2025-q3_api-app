@@ -11,4 +11,5 @@ export const LOCALSTORAGE_SEARCH_QUERY_KEY = 'search-query';
 export const ROUTES = {
   NOT_FOUND: '*',
   ROOT: '/',
+  ABOUT: '/about',
 };
