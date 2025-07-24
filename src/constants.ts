@@ -13,3 +13,6 @@ export const ROUTES = {
   ROOT: '/',
   ABOUT: '/about',
 };
+
+export const API_SEARCH_PARAM_PAGE = 'page';
+export const API_FIRST_PAGE = 1;

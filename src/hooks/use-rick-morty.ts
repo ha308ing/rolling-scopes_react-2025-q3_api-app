@@ -5,14 +5,28 @@ import {
   getRickMortyCharacterByName,
   type IRickMortyResponse,
 } from '../services/rick-morty';
-import { PROMISE_STATUS } from '../constants';
+import {
+  API_FIRST_PAGE,
+  API_SEARCH_PARAM_PAGE,
+  PROMISE_STATUS,
+} from '../constants';
+import { useSearchParams } from 'react-router';
 
 export const useRickMorty = () => {
   const [characterName, setCharacterName] = useLocalStorage();
   const [status, setStatus] = useState<T_PROMISE_STATUS | null>(null);
   const [data, setData] = useState<IRickMortyResponse | string | null>(null);
   const previousSearchInput = useRef<string>('');
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = searchParams.get(API_SEARCH_PARAM_PAGE) ?? API_FIRST_PAGE;
+
+  const setPage = (page: number) => {
+    setSearchParams((currentUrlSearchParams) => {
+      currentUrlSearchParams.set(API_SEARCH_PARAM_PAGE, page + '');
+      return currentUrlSearchParams;
+    });
+  };
 
   useEffect(() => {
     let ac: AbortController | null = null;
@@ -20,7 +34,7 @@ export const useRickMorty = () => {
     const getData = () => {
       const [requestPromise, abortController] = getRickMortyCharacterByName(
         characterName,
-        page
+        +page
       );
 
       ac = abortController;
@@ -53,12 +67,12 @@ export const useRickMorty = () => {
     }
 
     previousSearchInput.current = searchQuery;
-    setPage(1);
+    setPage(API_FIRST_PAGE);
     setCharacterName(searchQuery);
   };
 
   const isPaginated =
-    typeof data != 'string' && data != null && data.info.pages > 1;
+    typeof data != 'string' && data != null && data.info.pages > API_FIRST_PAGE;
 
   const pageCount = isPaginated ? data.info.pages : 0;
 
@@ -68,7 +82,7 @@ export const useRickMorty = () => {
     status,
     data,
     isPaginated,
-    page,
+    +page,
     pageCount,
     setPage,
   ] as const;

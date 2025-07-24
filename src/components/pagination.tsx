@@ -1,4 +1,5 @@
 import type React from 'react';
+import { API_FIRST_PAGE } from '../constants';
 
 interface IPaginationProps {
   page: number;
@@ -11,7 +12,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
   pageCount,
   setPage,
 }) => {
-  const isFirstPage = page === 1;
+  const isFirstPage = page === API_FIRST_PAGE;
 
   const isLastPage = page === pageCount;
 
