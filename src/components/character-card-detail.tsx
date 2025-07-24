@@ -5,13 +5,12 @@ interface ICharacterCardDetailProps {
   value: React.ReactNode;
 }
 
-export class CharacterCardDetail extends React.Component<ICharacterCardDetailProps> {
-  render() {
-    return (
-      <div>
-        <span className="has-text-weight-bold">{this.props.name}: </span>
-        {this.props.value}
-      </div>
-    );
-  }
-}
+export const CharacterCardDetail: React.FC<ICharacterCardDetailProps> = ({
+  name,
+  value,
+}) => (
+  <div>
+    <span className="has-text-weight-bold">{name}: </span>
+    {value}
+  </div>
+);
