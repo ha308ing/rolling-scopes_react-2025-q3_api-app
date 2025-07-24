@@ -1,31 +1,13 @@
-import { useState, type ChangeEventHandler } from 'react';
-import { SearchControls } from './components/search-controls';
-import { Results } from './components/results';
-import { PROMISE_STATUS } from './constants';
-import { useRickMorty } from './hooks/use-rick-morty';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import { ROUTES } from './constants';
+import { Page404 } from './pages/404-page';
+import { MainPage } from './pages/main-page';
 
-export const App = () => {
-  const [characterName, handleApiSearch, status, data] = useRickMorty();
-  const [searchInput, setSearchInput] = useState(characterName);
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchInput(e.target.value);
-  };
-
-  const handleSearch = () => {
-    handleApiSearch(searchInput);
-  };
-
-  return (
-    <main className="container section">
-      <SearchControls
-        onChange={handleChange}
-        onSearch={handleSearch}
-        value={searchInput}
-        isLoading={status === PROMISE_STATUS.PENDING}
-      />
-
-      <Results status={status} data={data} />
-    </main>
-  );
-};
+export const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path={ROUTES.ROOT} element={<MainPage />} />
+      <Route path={ROUTES.NOT_FOUND} element={<Page404 />} />
+    </Routes>
+  </BrowserRouter>
+);
