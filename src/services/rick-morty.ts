@@ -8,18 +8,23 @@ export interface IRickMortyResponse {
 
 const savedResults = new Map();
 
-export const getRickMortyCharacterByName = (characterName: string) => {
+export const getRickMortyCharacterByName = (
+  characterName: string,
+  page: number
+) => {
   const abortController = new AbortController();
 
   const request = new Promise<
     | { success: true; data: IRickMortyResponse }
     | { success: false; data: string }
   >((resolve) => {
-    if (savedResults.has(characterName)) {
-      return resolve(savedResults.get(characterName));
+    const queryString = `/?name=${characterName}&page=${page}`;
+
+    if (savedResults.has(queryString)) {
+      return resolve(savedResults.get(queryString));
     }
 
-    fetch(`${API_URL}/?name=${characterName}`, {
+    fetch(`${API_URL}${queryString}`, {
       signal: abortController.signal,
     })
       .then((response) => {
@@ -33,7 +38,7 @@ export const getRickMortyCharacterByName = (characterName: string) => {
       })
       .then((data) => {
         const result = { success: true, data };
-        savedResults.set(characterName, result);
+        savedResults.set(queryString, result);
         resolve(result);
       })
       .catch(

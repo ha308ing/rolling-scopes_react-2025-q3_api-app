@@ -15,6 +15,12 @@ describe('test app', () => {
         Promise.resolve({
           success: true,
           data: {
+            info: {
+              pages: 1,
+              page: 1,
+              count: 1,
+              next: '',
+            },
             results: [
               {
                 created: '',

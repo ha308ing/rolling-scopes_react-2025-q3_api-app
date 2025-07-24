@@ -12,13 +12,16 @@ export const useRickMorty = () => {
   const [status, setStatus] = useState<T_PROMISE_STATUS | null>(null);
   const [data, setData] = useState<IRickMortyResponse | string | null>(null);
   const previousSearchInput = useRef<string>('');
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     let ac: AbortController | null = null;
 
     const getData = () => {
-      const [requestPromise, abortController] =
-        getRickMortyCharacterByName(characterName);
+      const [requestPromise, abortController] = getRickMortyCharacterByName(
+        characterName,
+        page
+      );
 
       ac = abortController;
 
@@ -40,7 +43,7 @@ export const useRickMorty = () => {
     return () => {
       ac?.abort();
     };
-  }, [characterName]);
+  }, [characterName, page]);
 
   const handleSearch = (searchInput: string) => {
     const searchQuery = searchInput.trim();
@@ -50,8 +53,23 @@ export const useRickMorty = () => {
     }
 
     previousSearchInput.current = searchQuery;
+    setPage(1);
     setCharacterName(searchQuery);
   };
 
-  return [characterName, handleSearch, status, data] as const;
+  const isPaginated =
+    typeof data != 'string' && data != null && data.info.pages > 1;
+
+  const pageCount = isPaginated ? data.info.pages : 0;
+
+  return [
+    characterName,
+    handleSearch,
+    status,
+    data,
+    isPaginated,
+    page,
+    pageCount,
+    setPage,
+  ] as const;
 };
