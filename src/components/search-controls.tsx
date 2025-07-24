@@ -1,8 +1,4 @@
-import {
-  Component,
-  type ChangeEventHandler,
-  type FormEventHandler,
-} from 'react';
+import React, { type ChangeEventHandler, type FormEventHandler } from 'react';
 import { ErrorButton } from './error-button';
 
 interface ISearchControlsProps {
@@ -12,45 +8,42 @@ interface ISearchControlsProps {
   isLoading?: boolean;
 }
 
-export class SearchControls extends Component<ISearchControlsProps> {
-  handleSubmit: FormEventHandler = (e) => {
+export const SearchControls: React.FC<ISearchControlsProps> = ({
+  value,
+  onChange,
+  onSearch,
+  isLoading,
+}) => {
+  const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    this.props.onSearch();
+    onSearch();
   };
 
-  render() {
-    let inputControlClassName = 'control';
-    let buttonClassName = 'button';
+  const inputControlClassName = isLoading ? 'control is-loading' : 'control';
+  const buttonClassName = isLoading ? 'button is-loading' : 'button';
 
-    if (this.props.isLoading) {
-      const isLoadingClassName = ' is-loading';
-      inputControlClassName += isLoadingClassName;
-      buttonClassName += isLoadingClassName;
-    }
-
-    return (
-      <form
-        className="field is-grouped is-grouped-centered"
-        onSubmit={this.handleSubmit}
-      >
-        <div className={inputControlClassName}>
-          <input
-            type="text"
-            className="input"
-            value={this.props.value}
-            onChange={this.props.onChange}
-            placeholder="Enter character name"
-          />
-        </div>
-        <div className="control">
-          <button type="submit" className={buttonClassName}>
-            Search
-          </button>
-        </div>
-        <div className="control">
-          <ErrorButton />
-        </div>
-      </form>
-    );
-  }
-}
+  return (
+    <form
+      className="field is-grouped is-grouped-centered"
+      onSubmit={handleSubmit}
+    >
+      <div className={inputControlClassName}>
+        <input
+          type="text"
+          className="input"
+          value={value}
+          onChange={onChange}
+          placeholder="Enter character name"
+        />
+      </div>
+      <div className="control">
+        <button type="submit" className={buttonClassName}>
+          Search
+        </button>
+      </div>
+      <div className="control">
+        <ErrorButton />
+      </div>
+    </form>
+  );
+};
