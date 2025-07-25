@@ -4,13 +4,14 @@ import { SearchControls } from '../components/search-controls';
 import { PROMISE_STATUS } from '../constants';
 import { useRickMorty } from '../hooks/use-rick-morty';
 import { Pagination } from '../components/pagination';
+import { Outlet } from 'react-router';
 
 export const MainPage = () => {
   const [
+    data,
+    status,
     characterName,
     handleApiSearch,
-    status,
-    data,
     isPaginated,
     page,
     pageCount,
@@ -40,6 +41,8 @@ export const MainPage = () => {
       )}
 
       <Results status={status} data={data} />
+
+      <Outlet />
     </main>
   );
 };

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocalStorage } from './use-local-storage';
-import type { T_PROMISE_STATUS } from '../types';
+import type { IRickMortyCharacter, T_PROMISE_STATUS } from '../types';
 import {
+  getRickMortyCharacterById,
   getRickMortyCharacterByName,
   type IRickMortyResponse,
 } from '../services/rick-morty';
@@ -12,30 +13,36 @@ import {
 } from '../constants';
 import { useSearchParams } from 'react-router';
 
-export const useRickMorty = () => {
+export const useRickMorty = <
+  R extends IRickMortyCharacter | IRickMortyResponse = IRickMortyResponse,
+>(
+  characterId?: number
+) => {
   const [characterName, setCharacterName] = useLocalStorage();
   const [status, setStatus] = useState<T_PROMISE_STATUS | null>(null);
-  const [data, setData] = useState<IRickMortyResponse | string | null>(null);
+  const [data, setData] = useState<R | string | null>(null);
   const previousSearchInput = useRef<string>('');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = searchParams.get(API_SEARCH_PARAM_PAGE) ?? API_FIRST_PAGE;
 
-  const setPage = (page: number) => {
-    setSearchParams((currentUrlSearchParams) => {
-      currentUrlSearchParams.set(API_SEARCH_PARAM_PAGE, page + '');
-      return currentUrlSearchParams;
-    });
-  };
+  const setPage = useCallback(
+    (page: number) => {
+      setSearchParams((currentUrlSearchParams) => {
+        currentUrlSearchParams.set(API_SEARCH_PARAM_PAGE, page + '');
+        return currentUrlSearchParams;
+      });
+    },
+    [setSearchParams]
+  );
 
   useEffect(() => {
     let ac: AbortController | null = null;
 
     const getData = () => {
-      const [requestPromise, abortController] = getRickMortyCharacterByName(
-        characterName,
-        +page
-      );
+      const [requestPromise, abortController] = characterId
+        ? getRickMortyCharacterById(characterId)
+        : getRickMortyCharacterByName(characterName, +page);
 
       ac = abortController;
 
@@ -44,10 +51,11 @@ export const useRickMorty = () => {
       requestPromise.then((response) => {
         if (response.success) {
           setStatus(PROMISE_STATUS.FULFILLED);
-          setData(response.data);
+          setData(response.data as R);
         } else {
           setStatus(PROMISE_STATUS.REJECTED);
           setData(response.data);
+          setPage(1);
         }
       });
     };
@@ -57,7 +65,7 @@ export const useRickMorty = () => {
     return () => {
       ac?.abort();
     };
-  }, [characterName, page]);
+  }, [characterId, characterName, page, setPage]);
 
   const handleSearch = (searchInput: string) => {
     const searchQuery = searchInput.trim();
@@ -72,15 +80,17 @@ export const useRickMorty = () => {
   };
 
   const isPaginated =
-    typeof data != 'string' && data != null && data.info.pages > API_FIRST_PAGE;
+    typeof data != 'string' &&
+    data != null &&
+    (data as IRickMortyResponse).info?.pages > API_FIRST_PAGE;
 
-  const pageCount = isPaginated ? data.info.pages : 0;
+  const pageCount = isPaginated ? (data as IRickMortyResponse)?.info.pages : 0;
 
   return [
+    data,
+    status,
     characterName,
     handleSearch,
-    status,
-    data,
     isPaginated,
     +page,
     pageCount,

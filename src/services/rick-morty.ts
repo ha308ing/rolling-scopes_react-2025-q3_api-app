@@ -12,14 +12,30 @@ export const getRickMortyCharacterByName = (
   characterName: string,
   page: number
 ) => {
+  const queryString = `/?name=${characterName}&page=${page}`;
+
+  const [request, abortController] =
+    getRequestPromiseWithAbortController(queryString);
+
+  return [request, abortController] as const;
+};
+
+export const getRickMortyCharacterById = (characterId: number) => {
+  const queryString = `/${characterId}`;
+
+  const [request, abortController] =
+    getRequestPromiseWithAbortController(queryString);
+
+  return [request, abortController] as const;
+};
+
+function getRequestPromiseWithAbortController(queryString: string) {
   const abortController = new AbortController();
 
   const request = new Promise<
     | { success: true; data: IRickMortyResponse }
     | { success: false; data: string }
   >((resolve) => {
-    const queryString = `/?name=${characterName}&page=${page}`;
-
     if (savedResults.has(queryString)) {
       return resolve(savedResults.get(queryString));
     }
@@ -38,6 +54,16 @@ export const getRickMortyCharacterByName = (
       })
       .then((data) => {
         const result = { success: true, data };
+
+        if (data.results) {
+          (data as IRickMortyResponse).results.forEach((character) => {
+            savedResults.set(`/${character.id}`, {
+              success: true,
+              data: character,
+            });
+          });
+        }
+
         savedResults.set(queryString, result);
         resolve(result);
       })
@@ -49,4 +75,4 @@ export const getRickMortyCharacterByName = (
   });
 
   return [request, abortController] as const;
-};
+}
