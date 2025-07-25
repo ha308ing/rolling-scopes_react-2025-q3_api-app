@@ -1,8 +1,9 @@
 import React from 'react';
 import { CharacterCardDetail } from './character-card-detail';
 import type { IRickMortyCharacter } from '../types';
+import { Link, useSearchParams } from 'react-router';
 
-interface ICharacterCardProps {
+export interface ICharacterCardProps {
   character: IRickMortyCharacter;
 }
 
@@ -20,31 +21,42 @@ export const CharacterCard: React.FC<ICharacterCardProps> = ({
     location,
     species,
   },
-}) => (
-  <article className="box cell card-result">
-    <header className="is-flex is-justify-content-space-between is-align-items-self-start">
-      <h3 className="title">{name}</h3>
-      <div>#{id}</div>
-    </header>
+}) => {
+  const [searchParams] = useSearchParams();
 
-    <section className="is-flex is-align-items-self-start">
-      <figure className="image ">
-        <img src={image} alt={name} />
-      </figure>
+  return (
+    <Link
+      to={{
+        pathname: `/${id}`,
+        search: `?${searchParams.toString()}`,
+      }}
+    >
+      <article className="box cell card-result">
+        <header className="is-flex is-justify-content-space-between is-align-items-self-start">
+          <h3 className="title">{name}</h3>
+          <div>#{id}</div>
+        </header>
 
-      <div className="section">
-        <CharacterCardDetail name="Species" value={species} />
-        <CharacterCardDetail name="Origin" value={origin.name} />
-        <CharacterCardDetail name="Status" value={status} />
-        <CharacterCardDetail name="Gender" value={gender} />
-        {type && <CharacterCardDetail name="Type" value={type} />}
-        <CharacterCardDetail name="Location" value={location.name} />
-        <CharacterCardDetail name="Episodes count" value={episode.length} />
-        <CharacterCardDetail
-          name="Created"
-          value={new Date(created).toLocaleString()}
-        />
-      </div>
-    </section>
-  </article>
-);
+        <section className="is-flex is-align-items-self-start">
+          <figure className="image ">
+            <img src={image} alt={name} />
+          </figure>
+
+          <div className="section">
+            <CharacterCardDetail name="Species" value={species} />
+            <CharacterCardDetail name="Origin" value={origin.name} />
+            <CharacterCardDetail name="Status" value={status} />
+            <CharacterCardDetail name="Gender" value={gender} />
+            {type && <CharacterCardDetail name="Type" value={type} />}
+            <CharacterCardDetail name="Location" value={location.name} />
+            <CharacterCardDetail name="Episodes count" value={episode.length} />
+            <CharacterCardDetail
+              name="Created"
+              value={new Date(created).toLocaleString()}
+            />
+          </div>
+        </section>
+      </article>
+    </Link>
+  );
+};

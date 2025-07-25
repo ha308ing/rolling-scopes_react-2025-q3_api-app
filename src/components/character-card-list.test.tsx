@@ -1,7 +1,17 @@
 import { render } from '@testing-library/react';
-import { CharacterCardList } from './character-card-list';
+import {
+  CharacterCardList,
+  type ICharacterCardListProps,
+} from './character-card-list';
 import { test, expect } from 'vitest';
 import type { IRickMortyCharacter } from '../types';
+import { MemoryRouter } from 'react-router';
+
+const CharacterCardListWithRouter = (props: ICharacterCardListProps) => (
+  <MemoryRouter>
+    <CharacterCardList {...props} />
+  </MemoryRouter>
+);
 
 test('test character card list component', async () => {
   const results: IRickMortyCharacter[] = [
@@ -48,7 +58,9 @@ test('test character card list component', async () => {
     },
   ];
 
-  const { getAllByRole } = render(<CharacterCardList results={results} />);
+  const { getAllByRole } = render(
+    <CharacterCardListWithRouter results={results} />
+  );
 
   expect(getAllByRole('img')[0]).toHaveAttribute('src', 'image-url');
   expect(getAllByRole('article')).toHaveLength(2);

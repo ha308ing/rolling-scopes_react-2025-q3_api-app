@@ -2,7 +2,7 @@ import React from 'react';
 import { CharacterCard } from './character-card';
 import type { IRickMortyCharacter } from '../types';
 
-interface ICharacterCardListProps {
+export interface ICharacterCardListProps {
   results: IRickMortyCharacter[];
 }
 

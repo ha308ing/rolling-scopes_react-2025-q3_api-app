@@ -4,7 +4,7 @@ import { CharacterCardList } from './character-card-list';
 import type { T_PROMISE_STATUS } from '../types';
 import { PROMISE_STATUS } from '../constants';
 
-interface IResultsProps {
+export interface IResultsProps {
   status: T_PROMISE_STATUS | null;
   data: IRickMortyResponse | string | null;
 }
