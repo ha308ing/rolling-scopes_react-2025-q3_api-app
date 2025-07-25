@@ -16,3 +16,10 @@ body {
 .card-result {
   height: 100%;
 }
+
+.character-details {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}

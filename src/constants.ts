@@ -12,7 +12,10 @@ export const ROUTES = {
   NOT_FOUND: '*',
   ROOT: '/',
   ABOUT: '/about',
+  CHARACTER_ID_PARAM: '/:characterId',
 };
 
 export const API_SEARCH_PARAM_PAGE = 'page';
 export const API_FIRST_PAGE = 1;
+
+export const API_SEARCH_PARAM_DETAIL = 'detail';
