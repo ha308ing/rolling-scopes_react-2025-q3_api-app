@@ -67,9 +67,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
 
         {page > 2 && (
           <>
-            <li>
-              <span className="pagination-ellipsis">&hellip;</span>
-            </li>
+            {page > 3 && (
+              <li>
+                <span className="pagination-ellipsis">&hellip;</span>
+              </li>
+            )}
             <li>
               <button
                 onClick={handlePreviousPage}
@@ -102,9 +104,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
               </button>
             </li>
 
-            <li>
-              <span className="pagination-ellipsis">&hellip;</span>
-            </li>
+            {page + 2 < pageCount && (
+              <li>
+                <span className="pagination-ellipsis">&hellip;</span>
+              </li>
+            )}
           </>
         )}
         {!isLastPage && (
