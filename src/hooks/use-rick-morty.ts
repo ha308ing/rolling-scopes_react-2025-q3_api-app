@@ -45,7 +45,6 @@ export const useRickMorty = <
       if (characterId && Number.isNaN(parseInt(characterId))) {
         setStatus(PROMISE_STATUS.REJECTED);
         setData(`Character id must be a number`);
-        setPage(API_FIRST_PAGE);
         return;
       }
 
@@ -62,7 +61,6 @@ export const useRickMorty = <
         } else {
           setStatus(PROMISE_STATUS.REJECTED);
           setData(response.data);
-          setPage(API_FIRST_PAGE);
         }
       });
     };
@@ -72,7 +70,7 @@ export const useRickMorty = <
     return () => {
       ac?.abort();
     };
-  }, [characterId, characterName, page, setPage]);
+  }, [characterId, characterName, page]);
 
   const handleSearch = (searchInput: string) => {
     const searchQuery = searchInput.trim();
