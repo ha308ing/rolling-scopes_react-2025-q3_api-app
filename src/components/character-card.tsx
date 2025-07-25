@@ -1,28 +1,15 @@
 import React from 'react';
-import { CharacterCardDetail } from './character-card-detail';
 import type { IRickMortyCharacter } from '../types';
 import { Link, useSearchParams } from 'react-router';
+import { CharacterInfo } from './character-info';
 
 export interface ICharacterCardProps {
   character: IRickMortyCharacter;
 }
 
-export const CharacterCard: React.FC<ICharacterCardProps> = ({
-  character: {
-    name,
-    image,
-    origin,
-    type,
-    id,
-    status,
-    created,
-    gender,
-    episode,
-    location,
-    species,
-  },
-}) => {
+export const CharacterCard: React.FC<ICharacterCardProps> = ({ character }) => {
   const [searchParams] = useSearchParams();
+  const { name, id } = character;
 
   return (
     <Link
@@ -38,23 +25,7 @@ export const CharacterCard: React.FC<ICharacterCardProps> = ({
         </header>
 
         <section className="is-flex is-align-items-self-start">
-          <figure className="image ">
-            <img src={image} alt={name} />
-          </figure>
-
-          <div className="section">
-            <CharacterCardDetail name="Species" value={species} />
-            <CharacterCardDetail name="Origin" value={origin.name} />
-            <CharacterCardDetail name="Status" value={status} />
-            <CharacterCardDetail name="Gender" value={gender} />
-            {type && <CharacterCardDetail name="Type" value={type} />}
-            <CharacterCardDetail name="Location" value={location.name} />
-            <CharacterCardDetail name="Episodes count" value={episode.length} />
-            <CharacterCardDetail
-              name="Created"
-              value={new Date(created).toLocaleString()}
-            />
-          </div>
+          <CharacterInfo character={character} />
         </section>
       </article>
     </Link>

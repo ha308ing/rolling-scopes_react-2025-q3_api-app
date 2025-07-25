@@ -3,7 +3,7 @@ import { useRickMorty } from '../hooks/use-rick-morty';
 import { PROMISE_STATUS } from '../constants';
 import { useCallback, useEffect, useRef } from 'react';
 import type { IRickMortyCharacter } from '../types';
-import { CharacterCardDetail } from './character-card-detail';
+import { CharacterInfo } from './character-info';
 
 export const CharacterDetails = () => {
   const { characterId } = useParams();
@@ -40,7 +40,7 @@ export const CharacterDetails = () => {
     return <h1>{`Failed to get character ${characterData}`}</h1>;
   }
 
-  const { name, image, origin } = characterData as IRickMortyCharacter;
+  const { name } = characterData as IRickMortyCharacter;
 
   return (
     <div className="section box character-details" ref={ref}>
@@ -50,8 +50,7 @@ export const CharacterDetails = () => {
           Close
         </button>
       </div>
-      <img src={image} title={name} />
-      <CharacterCardDetail name="Origin" value={origin.name} />
+      <CharacterInfo character={characterData as IRickMortyCharacter} />
     </div>
   );
 };
