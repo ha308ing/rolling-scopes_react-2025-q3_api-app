@@ -4,6 +4,16 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { CharacterDetails } from './character-details';
 import { getRickMortyCharacterById } from '../services/rick-morty';
 
+const CharacterDetailsWithRouter = () => (
+  <MemoryRouter initialEntries={['/12']} initialIndex={0}>
+    <Routes>
+      <Route path="/" element={null}>
+        <Route path="/:characterId" element={<CharacterDetails />} />
+      </Route>
+    </Routes>
+  </MemoryRouter>
+);
+
 describe('test character details component', () => {
   beforeEach(() => {
     vi.mock('../services/rick-morty', () => ({
@@ -40,13 +50,7 @@ describe('test character details component', () => {
   });
 
   test('should call api with id from url parm', async () => {
-    const { findByText } = render(
-      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
-        <Routes>
-          <Route path="/:characterId" element={<CharacterDetails />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    const { findByText } = render(<CharacterDetailsWithRouter />);
 
     await findByText(/close/i);
 
@@ -56,15 +60,7 @@ describe('test character details component', () => {
   });
 
   test('should hide details on close', async () => {
-    const { findByText } = render(
-      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
-        <Routes>
-          <Route path="/" element={null}>
-            <Route path="/:characterId" element={<CharacterDetails />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
-    );
+    const { findByText } = render(<CharacterDetailsWithRouter />);
 
     const button = await findByText(/close/i);
 
@@ -76,15 +72,7 @@ describe('test character details component', () => {
   });
 
   test('should hide details on click outside', async () => {
-    const { findByText } = render(
-      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
-        <Routes>
-          <Route path="/" element={null}>
-            <Route path="/:characterId" element={<CharacterDetails />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
-    );
+    const { findByText } = render(<CharacterDetailsWithRouter />);
 
     const button = await findByText(/close/i);
 
@@ -93,5 +81,23 @@ describe('test character details component', () => {
     });
 
     expect(button).not.toBeInTheDocument();
+  });
+
+  test('should display error on rejected result', async () => {
+    vi.mocked(getRickMortyCharacterById).mockReturnValueOnce([
+      Promise.resolve({
+        success: false,
+        data: '',
+      }),
+      {
+        abort: vi.fn(),
+      } as unknown as AbortController,
+    ]);
+
+    const { findByRole } = render(<CharacterDetailsWithRouter />);
+
+    const heading = await findByRole('heading', { level: 2 });
+
+    expect(heading).toHaveTextContent('Failed to get character');
   });
 });

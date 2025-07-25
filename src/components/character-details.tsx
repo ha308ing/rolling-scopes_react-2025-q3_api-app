@@ -7,9 +7,8 @@ import { CharacterInfo } from './character-info';
 
 export const CharacterDetails = () => {
   const { characterId } = useParams();
-  const [characterData, status] = useRickMorty<IRickMortyCharacter>(
-    characterId ? +characterId : undefined
-  );
+  const [characterData, status] =
+    useRickMorty<IRickMortyCharacter>(characterId);
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -19,38 +18,42 @@ export const CharacterDetails = () => {
   }, [navigate, searchParams]);
 
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleWindowClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
         handleCloseDetails();
       }
     };
 
-    window.addEventListener('click', handleClick);
+    window.addEventListener('click', handleWindowClick);
 
-    return () => window.removeEventListener('click', handleClick);
-  }, [handleCloseDetails, navigate, searchParams]);
+    return () => window.removeEventListener('click', handleWindowClick);
+  }, [handleCloseDetails]);
 
-  if (status === null) return null;
+  let content;
 
-  if (status === PROMISE_STATUS.PENDING) {
-    return <h1>Loading character</h1>;
+  if (status == null || status === PROMISE_STATUS.PENDING) {
+    content = <h2 className='title is-4 mt-4"'>Loading character</h2>;
+  } else if (status === PROMISE_STATUS.REJECTED) {
+    content = <h2 className="title is-4 mt-4">Failed to get character</h2>;
+  } else {
+    const { name } = characterData as IRickMortyCharacter;
+    content = (
+      <>
+        <h2 className="title is-3 mt-4">{name}</h2>
+        <CharacterInfo character={characterData as IRickMortyCharacter} />
+      </>
+    );
   }
-
-  if (status === PROMISE_STATUS.REJECTED) {
-    return <h1>{`Failed to get character ${characterData}`}</h1>;
-  }
-
-  const { name } = characterData as IRickMortyCharacter;
 
   return (
     <div className="section box character-details" ref={ref}>
-      <div className="is-flex is-align-items-start is-4">
-        <h1 className="title is-1">{name}</h1>
-        <button className="button mt-2 ml-4" onClick={handleCloseDetails}>
-          Close
-        </button>
-      </div>
-      <CharacterInfo character={characterData as IRickMortyCharacter} />
+      <button
+        className="button details-close-button"
+        onClick={handleCloseDetails}
+      >
+        Close
+      </button>
+      {content}
     </div>
   );
 };

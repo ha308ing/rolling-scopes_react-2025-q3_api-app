@@ -16,7 +16,7 @@ import { useSearchParams } from 'react-router';
 export const useRickMorty = <
   R extends IRickMortyCharacter | IRickMortyResponse = IRickMortyResponse,
 >(
-  characterId?: number
+  characterId?: string
 ) => {
   const [characterName, setCharacterName] = useLocalStorage();
   const [status, setStatus] = useState<T_PROMISE_STATUS | null>(null);
@@ -40,13 +40,20 @@ export const useRickMorty = <
     let ac: AbortController | null = null;
 
     const getData = () => {
+      setStatus(PROMISE_STATUS.PENDING);
+
+      if (characterId && Number.isNaN(parseInt(characterId))) {
+        setStatus(PROMISE_STATUS.REJECTED);
+        setData(`Character id must be a number`);
+        setPage(API_FIRST_PAGE);
+        return;
+      }
+
       const [requestPromise, abortController] = characterId
-        ? getRickMortyCharacterById(characterId)
+        ? getRickMortyCharacterById(+characterId)
         : getRickMortyCharacterByName(characterName, +page);
 
       ac = abortController;
-
-      setStatus(PROMISE_STATUS.PENDING);
 
       requestPromise.then((response) => {
         if (response.success) {
@@ -55,7 +62,7 @@ export const useRickMorty = <
         } else {
           setStatus(PROMISE_STATUS.REJECTED);
           setData(response.data);
-          setPage(1);
+          setPage(API_FIRST_PAGE);
         }
       });
     };
