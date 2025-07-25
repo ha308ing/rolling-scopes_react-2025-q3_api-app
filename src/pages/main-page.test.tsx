@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
 import { MainPage } from './main-page';
 import { getRickMortyCharacterByName } from '../services/rick-morty';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { CharacterDetails } from '../components/character-details';
 
 const MainPageWithRouter = () => (
   <MemoryRouter>
@@ -56,6 +57,34 @@ describe('test main page', () => {
           abort: vi.fn(),
         },
       ]),
+      getRickMortyCharacterById: vi.fn().mockReturnValue([
+        Promise.resolve({
+          success: true,
+          data: {
+            created: '',
+            episode: ['1', '2'],
+            id: 0,
+            name: 'sam',
+            status: 'alive',
+            species: 'human',
+            type: 'human',
+            gender: 'female',
+            origin: {
+              name: 'earth',
+              url: '',
+            },
+            location: {
+              name: 'earch',
+              url: '',
+            },
+            image: 'image-url',
+            url: '',
+          },
+        }),
+        {
+          abort: vi.fn(),
+        },
+      ]),
     }));
   });
 
@@ -103,5 +132,66 @@ describe('test main page', () => {
     const message = await findByText(/failed to get/i);
 
     expect(message).toBeInTheDocument();
+  });
+
+  test('should display cards details with characterId param', async () => {
+    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
+      Promise.resolve({
+        success: false,
+        data: '404',
+      }),
+      {
+        abort: vi.fn(),
+      } as unknown as AbortController,
+    ]);
+
+    const { findByText } = render(
+      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
+        <Routes>
+          <Route path="/" element={<MainPage />}>
+            <Route path="/:characterId" element={<CharacterDetails />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const closeButton = await findByText(/close/i);
+
+    expect(closeButton).toBeInTheDocument();
+  });
+
+  test('should display padination for multiple pages', async () => {
+    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
+      Promise.resolve({
+        success: true,
+        data: {
+          info: {
+            pages: 2,
+            page: 1,
+            count: 1,
+            next: '',
+            prev: '',
+          },
+          results: [],
+        },
+      }),
+      {
+        abort: vi.fn(),
+      } as unknown as AbortController,
+    ]);
+
+    const { findByLabelText } = render(
+      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
+        <Routes>
+          <Route path="/" element={<MainPage />}>
+            <Route path="/:characterId" element={<CharacterDetails />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const pagination = await findByLabelText('pagination');
+
+    expect(pagination).toBeInTheDocument();
   });
 });
