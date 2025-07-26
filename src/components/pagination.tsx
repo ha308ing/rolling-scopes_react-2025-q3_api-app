@@ -12,6 +12,10 @@ export const Pagination: React.FC<IPaginationProps> = ({
   pageCount,
   setPage,
 }) => {
+  if (pageCount === 0) {
+    return null;
+  }
+
   const isFirstPage = page === API_FIRST_PAGE;
 
   const isLastPage = page === pageCount;
