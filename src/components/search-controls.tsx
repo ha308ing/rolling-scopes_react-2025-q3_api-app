@@ -1,24 +1,32 @@
-import React, { type ChangeEventHandler, type FormEventHandler } from 'react';
+import React, {
+  useState,
+  type ChangeEventHandler,
+  type FormEventHandler,
+} from 'react';
 import { ErrorButton } from './error-button';
 import { Link } from 'react-router';
 import { ROUTES } from '../constants';
 
 export interface ISearchControlsProps {
-  value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  onSearch: () => void;
+  initialValue: string;
+  onSearch: (searchInput: string) => void;
   isLoading?: boolean;
 }
 
 export const SearchControls: React.FC<ISearchControlsProps> = ({
-  value,
-  onChange,
-  onSearch,
+  initialValue,
   isLoading,
+  onSearch,
 }) => {
+  const [searchInput, setSearchInput] = useState(initialValue);
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setSearchInput(e.target.value);
+  };
+
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    onSearch();
+    onSearch(searchInput);
   };
 
   const inputControlClassName = isLoading ? 'control is-loading' : 'control';
@@ -33,8 +41,8 @@ export const SearchControls: React.FC<ISearchControlsProps> = ({
         <input
           type="text"
           className="input"
-          value={value}
-          onChange={onChange}
+          value={searchInput}
+          onChange={handleChange}
           placeholder="Enter character name"
         />
       </div>

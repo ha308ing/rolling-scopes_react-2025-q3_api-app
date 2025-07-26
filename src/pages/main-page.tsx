@@ -1,4 +1,3 @@
-import { useState, type ChangeEventHandler } from 'react';
 import { Results } from '../components/results';
 import { SearchControls } from '../components/search-controls';
 import { PROMISE_STATUS } from '../constants';
@@ -12,33 +11,20 @@ export const MainPage = () => {
     status,
     characterName,
     handleApiSearch,
-    isPaginated,
     page,
     pageCount,
     setPage,
   ] = useRickMorty();
-  const [searchInput, setSearchInput] = useState(characterName);
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchInput(e.target.value);
-  };
-
-  const handleSearch = () => {
-    handleApiSearch(searchInput);
-  };
 
   return (
     <main className="container section">
       <SearchControls
-        onChange={handleChange}
-        onSearch={handleSearch}
-        value={searchInput}
+        onSearch={handleApiSearch}
+        initialValue={characterName}
         isLoading={status === PROMISE_STATUS.PENDING}
       />
 
-      {isPaginated && (
-        <Pagination page={page} pageCount={pageCount} setPage={setPage} />
-      )}
+      <Pagination page={page} pageCount={pageCount} setPage={setPage} />
 
       <Results status={status} data={data} />
 

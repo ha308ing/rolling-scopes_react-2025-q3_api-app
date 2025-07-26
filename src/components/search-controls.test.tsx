@@ -12,15 +12,10 @@ const SearchControlsWithRouter = (props: ISearchControlsProps) => (
 describe('test search controls component', () => {
   test('should display passed value', async () => {
     const inputValue = 'peter';
-    const onChange = vitest.fn();
     const onSearch = vitest.fn();
 
     const { getByRole } = render(
-      <SearchControlsWithRouter
-        onChange={onChange}
-        value={inputValue}
-        onSearch={onSearch}
-      />
+      <SearchControlsWithRouter initialValue={inputValue} onSearch={onSearch} />
     );
 
     expect(getByRole('textbox')).toHaveValue('peter');
@@ -28,25 +23,25 @@ describe('test search controls component', () => {
 
   test('should call passed search handler', async () => {
     const inputValue = 'peter';
-    const onChange = vitest.fn();
     const onSearch = vitest.fn();
     const isLoading = true;
 
-    const { getByText } = render(
+    const { findByText, findByRole } = render(
       <SearchControlsWithRouter
-        onChange={onChange}
-        value={inputValue}
+        initialValue={inputValue}
         onSearch={onSearch}
         isLoading={isLoading}
       />
     );
 
-    const button = getByText(/search/i);
+    const input = await findByRole('textbox');
+    const button = await findByText(/search/i);
 
     act(() => {
+      fireEvent.change(input, { target: { value: 'sam' } });
       fireEvent.click(button);
     });
 
-    expect(onSearch).toBeCalled();
+    expect(onSearch).toBeCalledWith('sam');
   });
 });

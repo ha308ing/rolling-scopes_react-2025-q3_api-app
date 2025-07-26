@@ -96,7 +96,6 @@ export const useRickMorty = <
     status,
     characterName,
     handleSearch,
-    isPaginated,
     +page,
     pageCount,
     setPage,
