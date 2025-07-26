@@ -17,7 +17,7 @@ export const MainPage = () => {
   ] = useRickMorty();
 
   return (
-    <main className="container section">
+    <>
       <SearchControls
         onSearch={handleApiSearch}
         initialValue={characterName}
@@ -29,6 +29,6 @@ export const MainPage = () => {
       <Results status={status} data={data} />
 
       <Outlet />
-    </main>
+    </>
   );
 };
