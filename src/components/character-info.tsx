@@ -19,24 +19,32 @@ export const CharacterInfo: React.FC<ICharacterInfoProps> = ({
     image,
     name,
   },
-}) => (
-  <>
-    <figure className="image ">
-      <img src={image} alt={name} />
-    </figure>
+}) => {
+  const details = [
+    { name: 'species', value: species },
+    { name: 'origin', value: origin.name },
+    { name: 'status', value: status },
+    { name: 'gender', value: gender },
+    { name: 'type', value: type },
+    { name: 'location', value: location.name },
+    { name: 'episodes count', value: episode.length },
+    { name: 'created', value: new Date(created).toLocaleString() },
+  ];
 
-    <div className="section">
-      <CharacterCardDetail name="Species" value={species} />
-      <CharacterCardDetail name="Origin" value={origin.name} />
-      <CharacterCardDetail name="Status" value={status} />
-      <CharacterCardDetail name="Gender" value={gender} />
-      {type && <CharacterCardDetail name="Type" value={type} />}
-      <CharacterCardDetail name="Location" value={location.name} />
-      <CharacterCardDetail name="Episodes count" value={episode.length} />
-      <CharacterCardDetail
-        name="Created"
-        value={new Date(created).toLocaleString()}
-      />
-    </div>
-  </>
-);
+  return (
+    <>
+      <figure className="image ">
+        <img src={image} alt={name} />
+      </figure>
+
+      <div className="section">
+        {details.map(
+          (detail) =>
+            detail.value && (
+              <CharacterCardDetail key={detail.name} {...detail} />
+            )
+        )}
+      </div>
+    </>
+  );
+};
