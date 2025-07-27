@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
-import { MainPage } from './main-page';
+import { MainPage } from '../pages/main-page';
 import { getRickMortyCharacterByName } from '../services/rick-morty';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { CharacterDetails } from '../components/character-details';

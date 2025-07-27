@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { test, expect, describe, beforeEach, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { CharacterDetails } from './character-details';
+import { CharacterDetails } from '../components/character-details';
 import { getRickMortyCharacterById } from '../services/rick-morty';
 
 const CharacterDetailsWithRouter = () => (

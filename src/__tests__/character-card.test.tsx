@@ -1,5 +1,8 @@
 import { render } from '@testing-library/react';
-import { CharacterCard, type ICharacterCardProps } from './character-card';
+import {
+  CharacterCard,
+  type ICharacterCardProps,
+} from '../components/character-card';
 import { test, expect, describe } from 'vitest';
 import type { IRickMortyCharacter } from '../types';
 import { MemoryRouter } from 'react-router';

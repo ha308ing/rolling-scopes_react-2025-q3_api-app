@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import {
   CharacterCardList,
   type ICharacterCardListProps,
-} from './character-card-list';
+} from '../components/character-card-list';
 import { test, expect } from 'vitest';
 import type { IRickMortyCharacter } from '../types';
 import { MemoryRouter } from 'react-router';

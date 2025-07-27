@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { test, expect, describe } from 'vitest';
 import { PROMISE_STATUS } from '../constants';
-import { Results, type IResultsProps } from './results';
+import { Results, type IResultsProps } from '../components/results';
 import type { IRickMortyResponse } from '../services/rick-morty';
 import { MemoryRouter } from 'react-router';
 

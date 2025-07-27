@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
-import { AboutPage } from './about-page';
+import { AboutPage } from '../pages/about-page';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
 describe('test about page', () => {

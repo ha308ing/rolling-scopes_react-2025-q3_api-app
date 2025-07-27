@@ -1,6 +1,9 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { test, expect, describe, vitest } from 'vitest';
-import { SearchControls, type ISearchControlsProps } from './search-controls';
+import {
+  SearchControls,
+  type ISearchControlsProps,
+} from '../components/search-controls';
 import { MemoryRouter } from 'react-router';
 
 const SearchControlsWithRouter = (props: ISearchControlsProps) => (
