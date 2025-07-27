@@ -3,6 +3,7 @@ import { useRickMorty } from '../hooks/use-rick-morty';
 import { useCallback, useEffect, useRef } from 'react';
 import type { IRickMortyCharacter } from '../types';
 import { CharacterInfo } from './character-info';
+import { ROUTES } from '../constants';
 
 export const CharacterDetails = () => {
   const { characterId } = useParams();
@@ -13,17 +14,20 @@ export const CharacterDetails = () => {
     isSuccess,
   } = useRickMorty<IRickMortyCharacter>(characterId);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const handleCloseDetails = useCallback(() => {
-    navigate({ pathname: '/', search: searchParams.toString() });
+    navigate({ pathname: ROUTES.ROOT, search: searchParams.toString() });
   }, [navigate, searchParams]);
 
   useEffect(() => {
     const handleWindowClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as HTMLElement)
+      ) {
         handleCloseDetails();
       }
     };
@@ -50,7 +54,7 @@ export const CharacterDetails = () => {
   }
 
   return (
-    <div className="section box character-details" ref={ref}>
+    <div className="section box character-details" ref={containerRef}>
       <button
         className="button details-close-button"
         onClick={handleCloseDetails}
