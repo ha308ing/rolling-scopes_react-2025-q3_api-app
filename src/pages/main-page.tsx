@@ -1,32 +1,38 @@
 import { Results } from '../components/results';
 import { SearchControls } from '../components/search-controls';
-import { PROMISE_STATUS } from '../constants';
 import { useRickMorty } from '../hooks/use-rick-morty';
 import { Pagination } from '../components/pagination';
 import { Outlet } from 'react-router';
 
 export const MainPage = () => {
-  const [
+  const {
     data,
-    status,
     characterName,
-    handleApiSearch,
+    handleSearch,
     page,
     pageCount,
     setPage,
-  ] = useRickMorty();
+    isLoading,
+    isError,
+    isSuccess,
+  } = useRickMorty();
 
   return (
     <>
       <SearchControls
-        onSearch={handleApiSearch}
+        onSearch={handleSearch}
         initialValue={characterName}
-        isLoading={status === PROMISE_STATUS.PENDING}
+        isLoading={isLoading}
       />
 
       <Pagination page={page} pageCount={pageCount} setPage={setPage} />
 
-      <Results status={status} data={data} />
+      <Results
+        isError={isError}
+        isLoading={isLoading}
+        isSuccess={isSuccess}
+        data={data}
+      />
 
       <Outlet />
     </>

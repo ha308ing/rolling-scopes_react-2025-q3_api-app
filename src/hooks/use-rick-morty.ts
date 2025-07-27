@@ -91,13 +91,20 @@ export const useRickMorty = <
 
   const pageCount = isPaginated ? (data as IRickMortyResponse)?.info.pages : 0;
 
-  return [
+  const isLoading = status === PROMISE_STATUS.PENDING;
+  const isError = status === PROMISE_STATUS.REJECTED;
+  const isSuccess = status === PROMISE_STATUS.FULFILLED;
+
+  return {
     data,
-    status,
     characterName,
     handleSearch,
-    +page,
+    page: +page,
     pageCount,
     setPage,
-  ] as const;
+    isLoading,
+    isError,
+    isSuccess,
+    status,
+  };
 };

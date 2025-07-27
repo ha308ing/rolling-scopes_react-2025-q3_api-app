@@ -1,24 +1,31 @@
 import React from 'react';
 import type { IRickMortyResponse } from '../services/rick-morty';
 import { CharacterCardList } from './character-card-list';
-import type { T_PROMISE_STATUS } from '../types';
-import { PROMISE_STATUS } from '../constants';
 
 export interface IResultsProps {
-  status: T_PROMISE_STATUS | null;
+  isLoading?: boolean;
+  isError?: boolean;
+  isSuccess?: boolean;
   data: IRickMortyResponse | string | null;
 }
 
-export const Results: React.FC<IResultsProps> = ({ status, data }) => (
-  <div className="block py-6 has-text-centered">
-    {status === PROMISE_STATUS.PENDING && <h1 className="title">Loading</h1>}
+export const Results: React.FC<IResultsProps> = ({
+  isLoading,
+  isError,
+  isSuccess,
+  data,
+}) => {
+  return (
+    <div className="block py-6 has-text-centered">
+      {isLoading && <h1 className="title">Loading</h1>}
 
-    {status === PROMISE_STATUS.REJECTED && (
-      <h1 className="title">Failed to get characters: {data as string}</h1>
-    )}
+      {isError && (
+        <h1 className="title">Failed to get characters: {data as string}</h1>
+      )}
 
-    {status === PROMISE_STATUS.FULFILLED && data && (
-      <CharacterCardList results={(data as IRickMortyResponse).results} />
-    )}
-  </div>
-);
+      {isSuccess && data && (
+        <CharacterCardList results={(data as IRickMortyResponse).results} />
+      )}
+    </div>
+  );
+};

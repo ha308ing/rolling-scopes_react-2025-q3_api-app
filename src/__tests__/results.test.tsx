@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 import { test, expect, describe } from 'vitest';
-import { PROMISE_STATUS } from '../constants';
 import { Results, type IResultsProps } from '../components/results';
 import type { IRickMortyResponse } from '../services/rick-morty';
 import { MemoryRouter } from 'react-router';
@@ -13,22 +12,22 @@ const ResultsWithRouter = (props: IResultsProps) => (
 
 describe('test results component', () => {
   test('pending status', async () => {
-    const status = PROMISE_STATUS.PENDING;
+    const isLoading = true;
     const data = null;
 
     const { getAllByRole } = render(
-      <ResultsWithRouter status={status} data={data} />
+      <ResultsWithRouter isLoading={isLoading} data={data} />
     );
 
     expect(getAllByRole('heading')[0]).toHaveTextContent('Loading');
   });
 
   test('rejected status', async () => {
-    const status = PROMISE_STATUS.REJECTED;
+    const isError = true;
     const data = null;
 
     const { getAllByRole } = render(
-      <ResultsWithRouter status={status} data={data} />
+      <ResultsWithRouter isError={isError} data={data} />
     );
 
     expect(getAllByRole('heading')[0]).toHaveTextContent(
@@ -37,7 +36,7 @@ describe('test results component', () => {
   });
 
   test('fulfilled status', async () => {
-    const status = PROMISE_STATUS.FULFILLED;
+    const isSuccess = true;
     const data: IRickMortyResponse = {
       info: {
         count: 0,
@@ -70,7 +69,7 @@ describe('test results component', () => {
     };
 
     const { getAllByRole } = render(
-      <ResultsWithRouter status={status} data={data} />
+      <ResultsWithRouter isSuccess={isSuccess} data={data} />
     );
 
     expect(getAllByRole('heading')[0]).toHaveTextContent('sam');
