@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { CharacterCardDetail } from './character-card-detail';
+import { CharacterCardDetail } from '../components/character-card-detail';
 import { test, expect } from 'vitest';
 
 test('test character card detail component', async () => {

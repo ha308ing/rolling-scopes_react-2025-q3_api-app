@@ -1,7 +1,7 @@
 import { render, fireEvent, act } from '@testing-library/react';
 import { test, describe, expect, vi, beforeEach } from 'vitest';
-import { ErrorButton } from './error-button';
-import { ErrorBoundary } from './error-boundary';
+import { ErrorButton } from '../components/error-button';
+import { ErrorBoundary } from '../components/error-boundary';
 
 describe('test error boundary', () => {
   beforeEach(() => {

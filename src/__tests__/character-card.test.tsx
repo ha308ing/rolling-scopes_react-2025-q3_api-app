@@ -1,7 +1,17 @@
 import { render } from '@testing-library/react';
-import { CharacterCard } from './character-card';
+import {
+  CharacterCard,
+  type ICharacterCardProps,
+} from '../components/character-card';
 import { test, expect, describe } from 'vitest';
 import type { IRickMortyCharacter } from '../types';
+import { MemoryRouter } from 'react-router';
+
+const CharacterCardWithRouter = (props: ICharacterCardProps) => (
+  <MemoryRouter>
+    <CharacterCard {...props} />
+  </MemoryRouter>
+);
 
 const characterWithoutType: IRickMortyCharacter = {
   created: '',
@@ -32,7 +42,7 @@ describe('test character card component', () => {
     };
 
     const { getAllByRole, getByText } = render(
-      <CharacterCard character={character} />
+      <CharacterCardWithRouter character={character} />
     );
 
     expect(getAllByRole('heading')[0]).toHaveTextContent('sam');
@@ -41,7 +51,7 @@ describe('test character card component', () => {
 
   test('should not display type if empty', async () => {
     const { getAllByRole } = render(
-      <CharacterCard character={characterWithoutType} />
+      <CharacterCardWithRouter character={characterWithoutType} />
     );
 
     expect(getAllByRole('heading')[0]).toHaveTextContent('sam');
