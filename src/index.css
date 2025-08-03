@@ -16,3 +16,16 @@ body {
 .card-result {
   height: 100%;
 }
+
+.character-details {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}
+
+.details-close-button {
+  position: absolute;
+  inset-inline-end: 0.5rem;
+  inset-block-start: 1rem;
+}

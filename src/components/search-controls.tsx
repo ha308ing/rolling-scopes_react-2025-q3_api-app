@@ -1,56 +1,59 @@
-import {
-  Component,
+import React, {
+  useState,
   type ChangeEventHandler,
   type FormEventHandler,
 } from 'react';
-import { ErrorButton } from './error-button';
+import { Link } from 'react-router';
+import { ROUTES } from '../constants';
 
-interface ISearchControlsProps {
-  value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  onSearch: () => void;
+export interface ISearchControlsProps {
+  initialValue: string;
+  onSearch: (searchInput: string) => void;
   isLoading?: boolean;
 }
 
-export class SearchControls extends Component<ISearchControlsProps> {
-  handleSubmit: FormEventHandler = (e) => {
-    e.preventDefault();
-    this.props.onSearch();
+export const SearchControls: React.FC<ISearchControlsProps> = ({
+  initialValue,
+  isLoading,
+  onSearch,
+}) => {
+  const [searchInput, setSearchInput] = useState(initialValue);
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setSearchInput(e.target.value);
   };
 
-  render() {
-    let inputControlClassName = 'control';
-    let buttonClassName = 'button';
+  const handleSubmit: FormEventHandler = (e) => {
+    e.preventDefault();
+    onSearch(searchInput);
+  };
 
-    if (this.props.isLoading) {
-      const isLoadingClassName = ' is-loading';
-      inputControlClassName += isLoadingClassName;
-      buttonClassName += isLoadingClassName;
-    }
+  const inputControlClassName = isLoading ? 'control is-loading' : 'control';
+  const buttonClassName = isLoading ? 'button is-loading' : 'button';
 
-    return (
-      <form
-        className="field is-grouped is-grouped-centered"
-        onSubmit={this.handleSubmit}
-      >
-        <div className={inputControlClassName}>
-          <input
-            type="text"
-            className="input"
-            value={this.props.value}
-            onChange={this.props.onChange}
-            placeholder="Enter character name"
-          />
-        </div>
-        <div className="control">
-          <button type="submit" className={buttonClassName}>
-            Search
-          </button>
-        </div>
-        <div className="control">
-          <ErrorButton />
-        </div>
-      </form>
-    );
-  }
-}
+  return (
+    <form
+      className="field is-grouped is-grouped-centered"
+      onSubmit={handleSubmit}
+    >
+      <div className={inputControlClassName}>
+        <input
+          type="text"
+          className="input"
+          value={searchInput}
+          onChange={handleChange}
+          placeholder="Enter character name"
+        />
+      </div>
+      <div className="control">
+        <button type="submit" className={buttonClassName}>
+          Search
+        </button>
+      </div>
+
+      <Link to={ROUTES.ABOUT}>
+        <button className="button">About</button>
+      </Link>
+    </form>
+  );
+};

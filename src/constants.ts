@@ -7,3 +7,15 @@ export const PROMISE_STATUS = {
 } as const;
 
 export const LOCALSTORAGE_SEARCH_QUERY_KEY = 'search-query';
+
+export const ROUTES = {
+  NOT_FOUND: '*',
+  ROOT: '/',
+  ABOUT: '/about',
+  CHARACTER_ID_PARAM: '/:characterId',
+};
+
+export const API_SEARCH_PARAM_PAGE = 'page';
+export const API_FIRST_PAGE = 1;
+
+export const API_SEARCH_PARAM_DETAIL = 'detail';

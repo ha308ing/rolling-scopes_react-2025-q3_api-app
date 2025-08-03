@@ -2,16 +2,19 @@ import React from 'react';
 
 interface ICharacterCardDetailProps {
   name: string;
-  value: React.ReactNode;
+  value: string | number;
 }
 
-export class CharacterCardDetail extends React.Component<ICharacterCardDetailProps> {
-  render() {
-    return (
-      <div>
-        <span className="has-text-weight-bold">{this.props.name}: </span>
-        {this.props.value}
-      </div>
-    );
-  }
-}
+export const CharacterCardDetail: React.FC<ICharacterCardDetailProps> = ({
+  name,
+  value,
+}) => {
+  const transformedName = name[0].toUpperCase() + name.substring(1);
+
+  return (
+    <div>
+      <span className="has-text-weight-bold">{transformedName}: </span>
+      {value}
+    </div>
+  );
+};
