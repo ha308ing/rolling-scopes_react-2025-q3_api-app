@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
-import { App } from './app';
-import { getRickMortyCharacterByName } from './services/rick-morty';
+import { App } from '../app';
+import { getRickMortyCharacterByName } from '../services/rick-morty';
 
 describe('test app', () => {
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('test app', () => {
       setItem: vi.fn(),
     });
 
-    vi.mock('./services/rick-morty', () => ({
+    vi.mock('../services/rick-morty', () => ({
       getRickMortyCharacterByName: vi.fn().mockReturnValue([
         Promise.resolve({
           success: true,
