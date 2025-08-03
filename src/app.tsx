@@ -6,6 +6,7 @@ import { AboutPage } from './pages/about-page';
 import { CharacterDetails } from './components/character-details';
 import { RouterProvider } from 'react-router';
 import { Root } from './pages/root';
+import { ProtectedCharacterIdRoute } from './protected-routes/character-id-route';
 
 const router = createBrowserRouter([
   {
@@ -18,7 +19,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: ROUTES.CHARACTER_ID_PARAM,
-            element: <CharacterDetails />,
+            element: (
+              <ProtectedCharacterIdRoute>
+                <CharacterDetails />
+              </ProtectedCharacterIdRoute>
+            ),
           },
         ],
       },
@@ -28,6 +33,10 @@ const router = createBrowserRouter([
       },
     ],
     errorElement: <Page404 />,
+  },
+  {
+    path: ROUTES.NOT_FOUND,
+    element: <Page404 />,
   },
 ]);
 
