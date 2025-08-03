@@ -28,12 +28,12 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: ROUTES.ABOUT,
-        element: <AboutPage />,
-      },
     ],
     errorElement: <Page404 />,
+  },
+  {
+    path: ROUTES.ABOUT,
+    element: <AboutPage />,
   },
   {
     path: ROUTES.NOT_FOUND,
