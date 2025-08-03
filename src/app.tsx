@@ -7,6 +7,7 @@ import { CharacterDetails } from './components/character-details';
 import { RouterProvider } from 'react-router';
 import { Root } from './pages/root';
 import { ProtectedCharacterIdRoute } from './protected-routes/character-id-route';
+import { ThemeProvier } from './providers/theme-provider';
 
 const router = createBrowserRouter([
   {
@@ -40,4 +41,8 @@ const router = createBrowserRouter([
   },
 ]);
 
-export const App = () => <RouterProvider router={router} />;
+export const App = () => (
+  <ThemeProvier>
+    <RouterProvider router={router} />
+  </ThemeProvier>
+);
