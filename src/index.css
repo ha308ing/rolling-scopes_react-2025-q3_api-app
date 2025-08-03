@@ -8,11 +8,6 @@
   --bulma-primary-h: 74deg;
 }
 
-body {
-  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Rick_and_Morty.svg/256px-Rick_and_Morty.svg.png')
-    1rem 1rem no-repeat fixed;
-}
-
 .card-result {
   height: 100%;
 }
@@ -28,4 +23,10 @@ body {
   position: absolute;
   inset-inline-end: 0.5rem;
   inset-block-start: 1rem;
+}
+
+.root {
+  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Rick_and_Morty.svg/256px-Rick_and_Morty.svg.png')
+    var(--bulma-scheme-main) 1rem 1rem no-repeat fixed;
+  min-height: 100vh;
 }
