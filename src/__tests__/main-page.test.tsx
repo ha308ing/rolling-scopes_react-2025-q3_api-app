@@ -4,6 +4,7 @@ import { MainPage } from '../pages/main-page';
 import { getRickMortyCharacterByName } from '../services/rick-morty';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { CharacterDetails } from '../components/character-details';
+import { useSelectCharactersStore } from '../hooks/use-select-characters-store';
 
 const MainPageWithRouter = () => (
   <MemoryRouter>
@@ -193,5 +194,58 @@ describe('test main page', () => {
     const pagination = await findByLabelText('pagination');
 
     expect(pagination).toBeInTheDocument();
+  });
+
+  describe('tests with selected characters store', () => {
+    beforeEach(() => {
+      useSelectCharactersStore.getState().clear();
+    });
+
+    test('should display drawer on character select', async () => {
+      const { findByRole, findByText } = render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<MainPage />}></Route>
+          </Routes>
+        </MemoryRouter>
+      );
+
+      const checkbox = await findByRole('checkbox');
+
+      await act(() => fireEvent.click(checkbox));
+
+      const downloadButton = await findByText('Download');
+      const selectedItemText = await findByText('Selected 1 characters');
+
+      expect(downloadButton).toBeInTheDocument();
+      expect(selectedItemText).toBeInTheDocument();
+    });
+
+    test('should hide drawer on unselect all', async () => {
+      const { findByRole, findByText } = render(
+        <MemoryRouter>
+          <Routes>
+            <Route path="/" element={<MainPage />}></Route>
+          </Routes>
+        </MemoryRouter>
+      );
+
+      const checkbox = await findByRole('checkbox');
+
+      await act(async () => {
+        fireEvent.click(checkbox);
+      });
+
+      const downloadButton = await findByText('Download');
+
+      const unselectButton = await findByText('Unselect all');
+
+      await act(async () => {
+        fireEvent.click(unselectButton);
+      });
+
+      expect(downloadButton).not.toBeInTheDocument();
+      expect(checkbox).not.toBeChecked();
+    });
   });
 });

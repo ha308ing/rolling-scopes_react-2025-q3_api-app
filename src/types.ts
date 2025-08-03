@@ -1,7 +1,9 @@
-import type { PROMISE_STATUS } from './constants';
+import type { PROMISE_STATUS, THEMES } from './constants';
 
 export type T_PROMISE_STATUS =
   (typeof PROMISE_STATUS)[keyof typeof PROMISE_STATUS];
+
+export type T_THEMES = (typeof THEMES)[keyof typeof THEMES];
 
 export interface IRickMortyCharacter {
   id: number;

@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router';
 import { ROUTES } from '../constants';
+import { ThemeChangeButton } from './theme-change-button';
 
 export interface ISearchControlsProps {
   initialValue: string;
@@ -54,6 +55,10 @@ export const SearchControls: React.FC<ISearchControlsProps> = ({
       <Link to={ROUTES.ABOUT}>
         <button className="button">About</button>
       </Link>
+
+      <div className="control">
+        <ThemeChangeButton />
+      </div>
     </form>
   );
 };
