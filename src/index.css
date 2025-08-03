@@ -30,3 +30,10 @@
     var(--bulma-scheme-main) 1rem 1rem no-repeat fixed;
   min-height: 100vh;
 }
+
+.select-characters-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}

@@ -3,6 +3,7 @@ import { SearchControls } from '../components/search-controls';
 import { useRickMorty } from '../hooks/use-rick-morty';
 import { Pagination } from '../components/pagination';
 import { Outlet } from 'react-router';
+import { SelectCharactersDrawer } from '../components/select-characters-drawer';
 
 export const MainPage = () => {
   const {
@@ -35,6 +36,8 @@ export const MainPage = () => {
       />
 
       <Outlet />
+
+      <SelectCharactersDrawer />
     </>
   );
 };
