@@ -1,39 +1,33 @@
 import { Results } from '../components/results';
 import { SearchControls } from '../components/search-controls';
-import { useRickMorty } from '../hooks/use-rick-morty';
 import { Pagination } from '../components/pagination';
 import { Outlet } from 'react-router';
 import { SelectCharactersDrawer } from '../components/select-characters-drawer';
+import { useRickMortyName } from '../hooks/use-rick-morty-name';
 
 export const MainPage = () => {
   const {
-    data,
+    query,
     characterName,
     handleSearch,
     page,
     pageCount,
     setPage,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useRickMorty();
+    invalidateQueryCache,
+  } = useRickMortyName();
 
   return (
     <>
       <SearchControls
         onSearch={handleSearch}
         initialValue={characterName}
-        isLoading={isLoading}
+        isLoading={query.isLoading}
+        onInvalidate={invalidateQueryCache}
       />
 
       <Pagination page={page} pageCount={pageCount} setPage={setPage} />
 
-      <Results
-        isError={isError}
-        isLoading={isLoading}
-        isSuccess={isSuccess}
-        data={data}
-      />
+      <Results query={query} />
 
       <Outlet />
 

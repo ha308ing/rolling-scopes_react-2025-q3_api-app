@@ -8,6 +8,7 @@ import react from 'eslint-plugin-react';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import prettierConfig from 'eslint-plugin-prettier/recommended';
 import unicornPlugin from 'eslint-plugin-unicorn';
+import tanstackQueryPlugin from '@tanstack/eslint-plugin-query';
 
 export default tseslint.config([
   globalIgnores(['dist', 'coverage']),
@@ -17,6 +18,7 @@ export default tseslint.config([
       js.configs.recommended,
       ...tseslint.configs.strict,
       prettierConfig,
+      ...tanstackQueryPlugin.configs['flat/recommended'],
     ],
     languageOptions: {
       ecmaVersion: 2020,
@@ -28,6 +30,7 @@ export default tseslint.config([
       'react-refresh': reactRefresh,
       'react-compiler': reactCompiler,
       unicorn: unicornPlugin,
+      '@tanstack/query': tanstackQueryPlugin,
     },
     rules: {
       ...reactRefresh.configs.vite.rules,

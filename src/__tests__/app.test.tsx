@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { App } from '../app';
-import { getRickMortyCharacterByName } from '../services/rick-morty';
+import { fetchRickMorty } from '../utils/fetch-rick-morty';
+
+vi.mock('../utils/fetch-rick-morty', () => ({
+  fetchRickMorty: vi.fn(),
+}));
 
 describe('test app', () => {
   beforeEach(() => {
@@ -10,46 +14,36 @@ describe('test app', () => {
       setItem: vi.fn(),
     });
 
-    vi.mock('../services/rick-morty', () => ({
-      getRickMortyCharacterByName: vi.fn().mockReturnValue([
-        Promise.resolve({
-          success: true,
-          data: {
-            info: {
-              pages: 1,
-              page: 1,
-              count: 1,
-              next: '',
-            },
-            results: [
-              {
-                created: '',
-                episode: ['1', '2'],
-                id: 0,
-                name: 'sam',
-                status: 'alive',
-                species: 'human',
-                type: 'human',
-                gender: 'female',
-                origin: {
-                  name: 'earth',
-                  url: '',
-                },
-                location: {
-                  name: 'earch',
-                  url: '',
-                },
-                image: 'image-url',
-                url: '',
-              },
-            ],
-          },
-        }),
+    vi.mocked(fetchRickMorty).mockResolvedValue({
+      info: {
+        pages: 1,
+        page: 1,
+        count: 1,
+        next: '',
+      },
+      results: [
         {
-          abort: vi.fn(),
+          created: '',
+          episode: ['1', '2'],
+          id: 0,
+          name: 'sam',
+          status: 'alive',
+          species: 'human',
+          type: 'human',
+          gender: 'female',
+          origin: {
+            name: 'earth',
+            url: '',
+          },
+          location: {
+            name: 'earch',
+            url: '',
+          },
+          image: 'image-url',
+          url: '',
         },
-      ]),
-    }));
+      ],
+    });
   });
 
   test('should fill input with localstorage value', async () => {
@@ -81,17 +75,18 @@ describe('test app', () => {
   });
 
   test('should display message if no characters found', async () => {
-    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
-      Promise.resolve({
-        success: false,
-        data: '404',
-      }),
-      {
-        abort: vi.fn(),
-      } as unknown as AbortController,
-    ]);
+    vi.mocked(fetchRickMorty).mockRejectedValue({
+      message: 'not here',
+    });
 
     const { findByText } = render(<App />);
+
+    await waitFor(
+      () => {
+        expect(fetchRickMorty).toBeCalledTimes(3);
+      },
+      { timeout: 6000 }
+    );
 
     const message = await findByText(/failed to get/i);
 

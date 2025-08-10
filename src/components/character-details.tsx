@@ -1,18 +1,17 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router';
-import { useRickMorty } from '../hooks/use-rick-morty';
 import { useCallback, useEffect, useRef } from 'react';
+import type React from 'react';
 import type { IRickMortyCharacter } from '../types';
 import { CharacterInfo } from './character-info';
 import { ROUTES } from '../constants';
+import { useRickMortyId } from '../hooks/use-rick-morty-id';
 
 export const CharacterDetails = () => {
   const { characterId } = useParams();
   const {
-    data: characterData,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useRickMorty<IRickMortyCharacter>(characterId);
+    query: { data: characterData, isLoading, isError, isSuccess },
+    invalidateQueryCache,
+  } = useRickMortyId(characterId ?? '');
 
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -40,15 +39,21 @@ export const CharacterDetails = () => {
   let content;
 
   if (isLoading) {
-    content = <h2 className='title is-4 mt-4"'>Loading character</h2>;
+    content = <CharacterDetailsStatus message="Loading" />;
   } else if (isError) {
-    content = <h2 className="title is-4 mt-4">Failed to get character</h2>;
+    content = (
+      <CharacterDetailsStatus message="Failed to get character">
+        <button className="button" onClick={invalidateQueryCache}>
+          Reload
+        </button>
+      </CharacterDetailsStatus>
+    );
   } else if (isSuccess) {
     const { name } = characterData as IRickMortyCharacter;
     content = (
       <>
         <h2 className="title is-3 mt-4">{name}</h2>
-        <CharacterInfo character={characterData as IRickMortyCharacter} />
+        <CharacterInfo character={characterData} />
       </>
     );
   }
@@ -65,3 +70,13 @@ export const CharacterDetails = () => {
     </div>
   );
 };
+
+const CharacterDetailsStatus: React.FC<{
+  message: string;
+  children?: React.ReactNode;
+}> = ({ message, children }) => (
+  <section className="section has-text-centered">
+    <h2 className='title is-4 mt-4"'>{message}</h2>
+    {children}
+  </section>
+);
