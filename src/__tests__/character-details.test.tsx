@@ -1,52 +1,61 @@
-import { act, fireEvent, render } from '@testing-library/react';
-import { test, expect, describe, beforeEach, vi } from 'vitest';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { test, expect, describe, beforeEach, vi, afterEach } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { CharacterDetails } from '../components/character-details';
-import { getRickMortyCharacterById } from '../services/rick-morty';
+import { fetchRickMorty } from '../utils/fetch-rick-morty';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+vi.mock('../utils/fetch-rick-morty', () => ({
+  fetchRickMorty: vi.fn(),
+}));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: 0,
+      retryDelay: 0,
+    },
+  },
+});
 
 const CharacterDetailsWithRouter = () => (
-  <MemoryRouter initialEntries={['/12']} initialIndex={0}>
-    <Routes>
-      <Route path="/" element={null}>
-        <Route path="/:characterId" element={<CharacterDetails />} />
-      </Route>
-    </Routes>
-  </MemoryRouter>
+  <QueryClientProvider client={queryClient}>
+    <MemoryRouter initialEntries={['/12']} initialIndex={0}>
+      <Routes>
+        <Route path="/" element={null}>
+          <Route path="/:characterId" element={<CharacterDetails />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  </QueryClientProvider>
 );
 
 describe('test character details component', () => {
   beforeEach(() => {
-    vi.mock('../services/rick-morty', () => ({
-      getRickMortyCharacterById: vi.fn().mockReturnValue([
-        Promise.resolve({
-          success: true,
-          data: {
-            created: '',
-            episode: ['1', '2'],
-            id: 0,
-            name: 'sam',
-            status: 'alive',
-            species: 'human',
-            type: 'human',
-            gender: 'female',
-            origin: {
-              name: 'earth',
-              url: '',
-            },
-            location: {
-              name: 'earch',
-              url: '',
-            },
-            image: 'image-url',
-            url: '',
-          },
-        }),
-        {
-          abort: vi.fn(),
-        },
-      ]),
-      getRickMortyCharacterByName: vi.fn(),
-    }));
+    vi.mocked(fetchRickMorty).mockResolvedValue({
+      created: '',
+      episode: ['1', '2'],
+      id: 0,
+      name: 'sam',
+      status: 'alive',
+      species: 'human',
+      type: 'human',
+      gender: 'female',
+      origin: {
+        name: 'earth',
+        url: '',
+      },
+      location: {
+        name: 'earch',
+        url: '',
+      },
+      image: 'image-url',
+      url: '',
+    });
+  });
+
+  afterEach(() => {
+    queryClient.clear();
   });
 
   test('should call api with id from url parm', async () => {
@@ -54,9 +63,9 @@ describe('test character details component', () => {
 
     await findByText(/close/i);
 
-    const getByIdMock = vi.mocked(getRickMortyCharacterById);
+    const getByIdMock = vi.mocked(fetchRickMorty);
 
-    expect(getByIdMock).toBeCalledWith(12);
+    expect(getByIdMock).toBeCalledWith('/12');
   });
 
   test('should hide details on close', async () => {
@@ -84,20 +93,30 @@ describe('test character details component', () => {
   });
 
   test('should display error on rejected result', async () => {
-    vi.mocked(getRickMortyCharacterById).mockReturnValueOnce([
-      Promise.resolve({
-        success: false,
-        data: '',
-      }),
-      {
-        abort: vi.fn(),
-      } as unknown as AbortController,
-    ]);
+    vi.mocked(fetchRickMorty).mockRejectedValue({
+      message: 'not here',
+    });
 
     const { findByRole } = render(<CharacterDetailsWithRouter />);
+
+    await waitFor(() => {
+      expect(fetchRickMorty).toBeCalledTimes(3);
+    });
 
     const heading = await findByRole('heading', { level: 2 });
 
     expect(heading).toHaveTextContent('Failed to get character');
+  });
+
+  test('should display character name if success', async () => {
+    const { findByRole } = render(<CharacterDetailsWithRouter />);
+
+    await waitFor(() => {
+      expect(fetchRickMorty).toHaveResolved();
+    });
+
+    const heading = await findByRole('heading', { level: 2 });
+
+    expect(heading).toHaveTextContent('sam');
   });
 });
