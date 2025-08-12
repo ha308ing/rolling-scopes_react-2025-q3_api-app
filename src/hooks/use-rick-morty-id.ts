@@ -13,6 +13,7 @@ export const useRickMortyId = (characterId: string) => {
       return await fetchRickMorty(queryString);
     },
     retry: 2,
+    refetchOnMount: false,
   });
 
   const queryClient = useQueryClient();
