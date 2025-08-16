@@ -8,6 +8,7 @@ import { RouterProvider } from 'react-router';
 import { Root } from './pages/root';
 import { ProtectedCharacterIdRoute } from './protected-routes/character-id-route';
 import { ThemeProvier } from './providers/theme-provider';
+import { QueryClientProvider } from './providers/query-client-provider';
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,9 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => (
-  <ThemeProvier>
-    <RouterProvider router={router} />
-  </ThemeProvier>
+  <QueryClientProvider>
+    <ThemeProvier>
+      <RouterProvider router={router} />
+    </ThemeProvier>
+  </QueryClientProvider>
 );

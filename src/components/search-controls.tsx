@@ -11,12 +11,14 @@ export interface ISearchControlsProps {
   initialValue: string;
   onSearch: (searchInput: string) => void;
   isLoading?: boolean;
+  onInvalidate?: () => void;
 }
 
 export const SearchControls: React.FC<ISearchControlsProps> = ({
   initialValue,
   isLoading,
   onSearch,
+  onInvalidate,
 }) => {
   const [searchInput, setSearchInput] = useState(initialValue);
 
@@ -58,6 +60,12 @@ export const SearchControls: React.FC<ISearchControlsProps> = ({
 
       <div className="control">
         <ThemeChangeButton />
+      </div>
+
+      <div className="control">
+        <button className="button" onClick={onInvalidate}>
+          Invalidate Query Cache
+        </button>
       </div>
     </form>
   );

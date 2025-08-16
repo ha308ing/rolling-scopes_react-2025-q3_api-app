@@ -1,7 +1,4 @@
-import type { PROMISE_STATUS, THEMES } from './constants';
-
-export type T_PROMISE_STATUS =
-  (typeof PROMISE_STATUS)[keyof typeof PROMISE_STATUS];
+import type { THEMES } from './constants';
 
 export type T_THEMES = (typeof THEMES)[keyof typeof THEMES];
 
@@ -31,4 +28,9 @@ export interface IResponseInfo {
   pages: number;
   next: string;
   prev: string;
+}
+
+export interface IRickMortyResponse {
+  info: IResponseInfo;
+  results: IRickMortyCharacter[];
 }

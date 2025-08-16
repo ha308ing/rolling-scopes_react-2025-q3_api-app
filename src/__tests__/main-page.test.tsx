@@ -1,15 +1,27 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render } from '@testing-library/react';
 import { MainPage } from '../pages/main-page';
-import { getRickMortyCharacterByName } from '../services/rick-morty';
+import { fetchRickMorty } from '../utils/fetch-rick-morty';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { CharacterDetails } from '../components/character-details';
 import { useSelectCharactersStore } from '../hooks/use-select-characters-store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const MainPageWithRouter = () => (
-  <MemoryRouter>
-    <MainPage />
-  </MemoryRouter>
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: 0,
+      retryDelay: 0,
+    },
+  },
+});
+
+vi.mock('../utils/fetch-rick-morty', () => ({
+  fetchRickMorty: vi.fn(),
+}));
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 describe('test main page', () => {
@@ -19,78 +31,49 @@ describe('test main page', () => {
       setItem: vi.fn(),
     });
 
-    vi.mock('../services/rick-morty', () => ({
-      getRickMortyCharacterByName: vi.fn().mockReturnValue([
-        Promise.resolve({
-          success: true,
-          data: {
-            info: {
-              pages: 1,
-              page: 1,
-              count: 1,
-              next: '',
-            },
-            results: [
-              {
-                created: '',
-                episode: ['1', '2'],
-                id: 0,
-                name: 'sam',
-                status: 'alive',
-                species: 'human',
-                type: 'human',
-                gender: 'female',
-                origin: {
-                  name: 'earth',
-                  url: '',
-                },
-                location: {
-                  name: 'earch',
-                  url: '',
-                },
-                image: 'image-url',
-                url: '',
-              },
-            ],
-          },
-        }),
+    vi.mocked(fetchRickMorty).mockResolvedValue({
+      info: {
+        pages: 1,
+        page: 1,
+        count: 1,
+        next: '',
+      },
+      results: [
         {
-          abort: vi.fn(),
-        },
-      ]),
-      getRickMortyCharacterById: vi.fn().mockReturnValue([
-        Promise.resolve({
-          success: true,
-          data: {
-            created: '',
-            episode: ['1', '2'],
-            id: 0,
-            name: 'sam',
-            status: 'alive',
-            species: 'human',
-            type: 'human',
-            gender: 'female',
-            origin: {
-              name: 'earth',
-              url: '',
-            },
-            location: {
-              name: 'earch',
-              url: '',
-            },
-            image: 'image-url',
+          created: '',
+          episode: ['1', '2'],
+          id: 0,
+          name: 'sam',
+          status: 'alive',
+          species: 'human',
+          type: 'human',
+          gender: 'female',
+          origin: {
+            name: 'earth',
             url: '',
           },
-        }),
-        {
-          abort: vi.fn(),
+          location: {
+            name: 'earch',
+            url: '',
+          },
+          image: 'image-url',
+          url: '',
         },
-      ]),
-    }));
+      ],
+    });
+  });
+
+  afterEach(() => {
+    queryClient.clear();
   });
 
   test('should fill input with localstorage value', async () => {
-    const { findByRole } = render(<MainPageWithRouter />);
+    const { findByRole } = render(
+      <MemoryRouter>
+        <MainPage />
+      </MemoryRouter>,
+      { wrapper }
+    );
 
     const searchInput = await findByRole('textbox');
 
@@ -105,7 +88,12 @@ describe('test main page', () => {
       setItem: localStorageSetSpy,
     });
 
-    const { findByText } = render(<MainPageWithRouter />);
+    const { findByText } = render(
+      <MemoryRouter>
+        <MainPage />
+      </MemoryRouter>,
+      { wrapper }
+    );
     const searchButton = await findByText(/search/i);
 
     act(() => {
@@ -118,17 +106,18 @@ describe('test main page', () => {
   });
 
   test('should display message if no characters found', async () => {
-    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
-      Promise.resolve({
-        success: false,
-        data: '404',
-      }),
-      {
-        abort: vi.fn(),
-      } as unknown as AbortController,
-    ]);
+    vi.mocked(fetchRickMorty).mockRejectedValue({
+      error: {
+        message: 'nothing here',
+      },
+    });
 
-    const { findByText } = render(<MainPageWithRouter />);
+    const { findByText } = render(
+      <MemoryRouter>
+        <MainPage />
+      </MemoryRouter>,
+      { wrapper }
+    );
 
     const message = await findByText(/failed to get/i);
 
@@ -136,15 +125,11 @@ describe('test main page', () => {
   });
 
   test('should display cards details with characterId param', async () => {
-    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
-      Promise.resolve({
-        success: false,
-        data: '404',
-      }),
-      {
-        abort: vi.fn(),
-      } as unknown as AbortController,
-    ]);
+    vi.mocked(fetchRickMorty).mockRejectedValue({
+      error: {
+        message: 'nothing here',
+      },
+    });
 
     const { findByText } = render(
       <MemoryRouter initialEntries={['/12']} initialIndex={0}>
@@ -153,7 +138,10 @@ describe('test main page', () => {
             <Route path="/:characterId" element={<CharacterDetails />} />
           </Route>
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
+      {
+        wrapper,
+      }
     );
 
     const closeButton = await findByText(/close/i);
@@ -162,33 +150,24 @@ describe('test main page', () => {
   });
 
   test('should display padination for multiple pages', async () => {
-    vi.mocked(getRickMortyCharacterByName).mockReturnValueOnce([
-      Promise.resolve({
-        success: true,
-        data: {
-          info: {
-            pages: 2,
-            page: 1,
-            count: 1,
-            next: '',
-            prev: '',
-          },
-          results: [],
-        },
-      }),
-      {
-        abort: vi.fn(),
-      } as unknown as AbortController,
-    ]);
+    vi.mocked(fetchRickMorty).mockResolvedValue({
+      info: {
+        pages: 2,
+        page: 1,
+        count: 1,
+        next: '',
+        prev: '',
+      },
+      results: [],
+    });
 
     const { findByLabelText } = render(
-      <MemoryRouter initialEntries={['/12']} initialIndex={0}>
+      <MemoryRouter>
         <Routes>
-          <Route path="/" element={<MainPage />}>
-            <Route path="/:characterId" element={<CharacterDetails />} />
-          </Route>
+          <Route path="/" element={<MainPage />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper }
     );
 
     const pagination = await findByLabelText('pagination');
@@ -207,7 +186,8 @@ describe('test main page', () => {
           <Routes>
             <Route path="/" element={<MainPage />}></Route>
           </Routes>
-        </MemoryRouter>
+        </MemoryRouter>,
+        { wrapper }
       );
 
       const checkbox = await findByRole('checkbox');
@@ -227,7 +207,8 @@ describe('test main page', () => {
           <Routes>
             <Route path="/" element={<MainPage />}></Route>
           </Routes>
-        </MemoryRouter>
+        </MemoryRouter>,
+        { wrapper }
       );
 
       const checkbox = await findByRole('checkbox');

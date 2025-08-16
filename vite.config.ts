@@ -11,6 +11,7 @@ export default defineConfig({
     clearMocks: true,
     setupFiles: 'setup-tests.js',
     environment: 'jsdom',
+    testTimeout: 5000,
     coverage: {
       thresholds: {
         statements: 80,
@@ -23,6 +24,7 @@ export default defineConfig({
         'src/**/*.test.{js,jsx,ts,tsx}',
         'src/**/*.spec.{js,jsx,ts,tsx}',
         'src/main.tsx',
+        'src/app.tsx',
         'src/**/*.d.ts',
       ],
     },
