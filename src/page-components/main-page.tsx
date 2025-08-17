@@ -5,7 +5,7 @@ import { Outlet } from 'react-router';
 import { SelectCharactersDrawer } from '../components/select-characters-drawer';
 import { useRickMortyName } from '../hooks/use-rick-morty-name';
 
-export const MainPage = () => {
+const MainPage = () => {
   const {
     query,
     characterName,
@@ -35,3 +35,5 @@ export const MainPage = () => {
     </>
   );
 };
+
+export default MainPage;

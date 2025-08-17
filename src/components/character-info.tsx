@@ -1,6 +1,7 @@
 import type React from 'react';
 import type { IRickMortyCharacter } from '../types';
 import { CharacterCardDetail } from './character-card-detail';
+import Image from 'next/image';
 
 interface ICharacterInfoProps {
   character: IRickMortyCharacter;
@@ -34,7 +35,7 @@ export const CharacterInfo: React.FC<ICharacterInfoProps> = ({
   return (
     <>
       <figure className="image ">
-        <img src={image} alt={name} />
+        <Image src={image} alt={name} />
       </figure>
 
       <div className="section">
