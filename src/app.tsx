@@ -42,10 +42,12 @@ const router = createBrowserRouter([
   },
 ]);
 
-export const App = () => (
+const App = () => (
   <QueryClientProvider>
     <ThemeProvier>
       <RouterProvider router={router} />
     </ThemeProvier>
   </QueryClientProvider>
 );
+
+export default App;
