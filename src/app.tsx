@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router';
 import { ROUTES } from './constants';
-import { Page404 } from './pages/404-page';
-import { MainPage } from './pages/main-page';
-import { AboutPage } from './pages/about-page';
+import Page404 from './page-components/404-page';
+import MainPage from './page-components/main-page';
+import AboutPage from './page-components/about-page';
 import { CharacterDetails } from './components/character-details';
 import { RouterProvider } from 'react-router';
-import { Root } from './pages/root';
+import Root from './page-components/root';
 import { ProtectedCharacterIdRoute } from './protected-routes/character-id-route';
 import { ThemeProvier } from './providers/theme-provider';
 import { QueryClientProvider } from './providers/query-client-provider';

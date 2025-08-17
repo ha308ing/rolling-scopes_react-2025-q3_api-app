@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router';
 import { useTheme } from '../hooks/use-theme';
 
-export const Root = () => {
+const Root = () => {
   const theme = useTheme();
 
   return (
@@ -12,3 +12,5 @@ export const Root = () => {
     </div>
   );
 };
+
+export default Root;

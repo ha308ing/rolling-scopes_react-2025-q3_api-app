@@ -1,6 +1,6 @@
-import { PageWithHomeLink } from '../components/page-with-home-link';
+import PageWithHomeLink from '../components/page-with-home-link';
 
-export const AboutPage = () => (
+const AboutPage = () => (
   <PageWithHomeLink title="About">
     <section className="section">
       <p className="block">Hello, I&apos;m Ivan! 👋</p>
@@ -27,3 +27,5 @@ export const AboutPage = () => (
     </section>
   </PageWithHomeLink>
 );
+
+export default AboutPage;

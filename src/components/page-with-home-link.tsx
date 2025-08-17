@@ -8,7 +8,7 @@ interface IPageWithHomeLinkProps {
   children?: React.ReactNode;
 }
 
-export const PageWithHomeLink: React.FC<IPageWithHomeLinkProps> = ({
+const PageWithHomeLink: React.FC<IPageWithHomeLinkProps> = ({
   title,
   children,
 }) => {
@@ -26,3 +26,5 @@ export const PageWithHomeLink: React.FC<IPageWithHomeLinkProps> = ({
     </div>
   );
 };
+
+export default PageWithHomeLink;
