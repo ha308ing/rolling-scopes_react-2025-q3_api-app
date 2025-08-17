@@ -1,3 +1,4 @@
+// @ts-expect-error(no css declaration)
 import '../../index.css';
 import { ClientOnly } from './client';
 
